@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Logs / temp
+*.log
+node_modules/
+
+# Design working files (kept locally, not needed for deploy)
+assets/
+리뉴얼 기획.png
