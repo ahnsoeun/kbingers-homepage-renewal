@@ -9,6 +9,7 @@
 *.log
 node_modules/
 
-# Design working files (kept locally, not needed for deploy)
-assets/
+# Design working files (kept locally, not needed for deploy).
+# Root-anchored — site/assets/ holds the shipped brand logos and must stay tracked.
+/assets/
 리뉴얼 기획.png
