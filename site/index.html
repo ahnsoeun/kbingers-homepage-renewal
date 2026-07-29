@@ -152,10 +152,10 @@
       return <Tag ref={ref} className={`kb-reveal ${className}`} {...rest}>{children}</Tag>;
     }
 
-    // Section container with consistent max width + padding
+    // Section container — 1200px rail, matching the design's content width
     function Section({ id, className = '', children }) {
       return (
-        <section id={id} className={`mx-auto w-full max-w-6xl px-5 sm:px-8 ${className}`}>
+        <section id={id} className={`mx-auto w-full max-w-[1200px] px-5 sm:px-8 ${className}`}>
           {children}
         </section>
       );
@@ -263,7 +263,7 @@
       return (
         <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${scrolled ? 'bg-grey90/85 backdrop-blur-md' : 'bg-transparent'}`}>
           {/* Hairline sits inside the max-width rail, matching the design */}
-          <nav className="mx-auto flex max-w-6xl items-center justify-between border-b border-white/15 px-5 py-4 sm:px-8">
+          <nav className="mx-auto flex max-w-[1200px] items-center justify-between border-b border-white/15 px-5 py-4 sm:px-8">
             <a href="#top" aria-label="Kbingers home" className="inline-flex items-center">
               <img src="assets/logo-kbingers.png" alt="Kbingers" className="h-7 w-auto sm:h-8" />
             </a>
@@ -304,69 +304,87 @@
     // ========================================
     // 📄 Hero
     // ========================================
-    // ⭐ App-store rating — score leads, stars qualify it, label sources it
+    // ⭐ App-store rating — laurel wreath flanking the score, per the design
     function RatingBadge() {
       return (
-        <div className="inline-flex flex-col items-center gap-1.5">
-          <div className="flex items-baseline gap-2.5">
-            <span className="text-3xl font-extrabold leading-none tracking-tight text-white sm:text-4xl">4.2</span>
-            <span className="text-sm leading-none tracking-[0.15em] text-lime" aria-hidden="true">★★★★★</span>
+        <div className="flex items-center justify-center gap-1.5">
+          <img src="assets/laurel-left.png" alt="" aria-hidden="true" className="h-[52px] w-auto sm:h-[62px]" />
+          <div className="flex flex-col items-center px-1">
+            <span className="text-[28px] font-bold leading-none text-white sm:text-[33px]">4.2</span>
+            <span className="mt-1.5 text-[11px] leading-none tracking-[0.1em] text-white sm:text-[13px]" aria-hidden="true">
+              ★★★★★
+            </span>
           </div>
-          <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-grey40">
-            Download on App Store
-          </span>
+          <img src="assets/laurel-right.png" alt="" aria-hidden="true" className="h-[52px] w-auto sm:h-[62px]" />
+          <span className="sr-only">Rated 4.2 out of 5 on the App Store</span>
         </div>
       );
     }
 
-    // Ambient wall of content behind the hero — reuses the same gradient palette as the
-    // content rows so the backdrop reads as Kbingers' own library, blurred back.
-    const WALL = [
-      GRAD.purple, GRAD.rose,   GRAD.sky,    GRAD.amber, GRAD.teal,   GRAD.indigo, GRAD.green,  GRAD.slate,
-      GRAD.sky,    GRAD.indigo, GRAD.amber,  GRAD.green, GRAD.purple, GRAD.slate,  GRAD.rose,   GRAD.teal,
-      GRAD.teal,   GRAD.green,  GRAD.rose,   GRAD.slate, GRAD.sky,    GRAD.purple, GRAD.indigo, GRAD.amber,
-      GRAD.amber,  GRAD.slate,  GRAD.purple, GRAD.teal,  GRAD.rose,   GRAD.green,  GRAD.sky,    GRAD.indigo,
-    ];
-
+    // Wall of K-content behind the hero, as in the design: real poster artwork,
+    // sharp at the edges and softened through the middle, under a heavy scrim.
     function HeroBackdrop() {
       return (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          {/* Blurred hard enough that the tile seams read as one colour field, not a grid */}
-          <div className="absolute -inset-x-24 -inset-y-28 grid grid-cols-3 gap-6 opacity-[0.6] blur-[48px] sm:grid-cols-4 lg:grid-cols-6">
-            {WALL.map((g, i) => (
-              <div key={i} className="aspect-[2/3]" style={{ background: g }} />
-            ))}
-          </div>
-          {/* Scrim — keeps the copy legible and pulls the colour to the edges */}
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(58% 52% at 50% 40%, rgba(16,22,14,0.52), rgba(16,22,14,0.88) 68%, #10160E 100%)' }} />
-          <div className="absolute inset-x-0 bottom-0 h-48" style={{ background: 'linear-gradient(to top,#10160E,transparent)' }} />
+          {/* Height fills, width keeps the poster proportions — squeezing 2560px of wall
+              into a 1440px viewport turns the posters into unreadable slivers. Anchored
+              left so the sharp, unmirrored blocks are the ones on screen. */}
+          <div
+            className="absolute inset-0 bg-cover bg-center sm:bg-[length:auto_100%] sm:bg-left sm:bg-repeat-x"
+            style={{ backgroundImage: "url('assets/hero-wall.jpg')" }}
+          />
+          {/* The design has a 680px margin either side of its 1200px rail, so the wall
+              reads there. At normal widths there is no such margin — so instead of a
+              full-field scrim, pool the darkness behind the headline and let the
+              posters carry everywhere else. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: 'rgba(16,22,14,0.40)',
+              background: [
+                'radial-gradient(46% 32% at 50% 26%, rgba(16,22,14,0.86), rgba(16,22,14,0) 72%)',
+                'linear-gradient(to top, #10160E 0%, rgba(16,22,14,0) 34%)',
+                'linear-gradient(rgba(16,22,14,0.40), rgba(16,22,14,0.40))',
+              ].join(', '),
+            }}
+          />
+          <div className="absolute inset-x-0 bottom-0 h-40" style={{ background: 'linear-gradient(to top,#10160E,transparent)' }} />
         </div>
       );
     }
 
-    // One platform, one tap. The whole card is the target, not just the button.
-    function InstallCard({ eyebrow, cta, logo, logoHeight, brandBg, brandFg, glow, href = '#install' }) {
+    // Platform install card — copy up top, brand CTA, device photo bleeding off the base
+    function InstallCard({ eyebrow, cta, logo, logoHeight, brandBg, brandFg, photo, href = '#install' }) {
       return (
         <a
           href={href}
-          className="group relative block overflow-hidden rounded-3xl border border-white/12 bg-white/[0.04] p-6 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.07] sm:p-8"
+          className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90/50 px-5 pt-7 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-9"
         >
+          {/* Device photo sits on the base and fades up into the card */}
+          <img
+            src={photo}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[112px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] sm:h-[150px]"
+          />
+          {/* Fades the photo's top edge into the card face instead of a hard seam */}
           <span
-            className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full opacity-30 blur-3xl transition-opacity duration-300 group-hover:opacity-55"
-            style={{ background: glow }}
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[112px] sm:h-[150px]"
+            style={{ background: 'linear-gradient(to bottom, #10160E, rgba(16,22,14,0.15) 42%, rgba(16,22,14,0) 70%)' }}
             aria-hidden="true"
           />
-          <span className="relative block text-sm text-grey40">{eyebrow}</span>
-          <span className="relative mt-1.5 block text-2xl font-extrabold tracking-tight text-white sm:text-[30px]">
-            Install in one click
+
+          <span className="relative text-[13px] font-light text-white/85 sm:text-[15px]">{eyebrow}</span>
+          <span className="relative mt-1.5 text-[26px] font-semibold leading-tight tracking-tight text-white sm:text-[34px]">
+            Install in One Click
           </span>
           <span
-            className="relative mt-7 flex items-center gap-4 rounded-2xl px-5 py-4 transition-transform duration-200 group-hover:scale-[1.015]"
+            className="relative mt-5 flex w-full max-w-[292px] items-center gap-3 rounded-[10px] px-5 py-3.5 shadow-lg transition-transform duration-200 group-hover:scale-[1.02] sm:mt-6"
             style={{ background: brandBg, color: brandFg }}
           >
             <img src={logo} alt="" className="w-auto shrink-0" style={{ height: logoHeight }} />
-            <span className="flex-1 text-left text-sm font-bold sm:text-base">{cta}</span>
-            <span className="text-lg leading-none opacity-70 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">›</span>
+            <span className="flex-1 text-left text-[13px] font-bold sm:text-sm">{cta}</span>
+            <span className="text-base leading-none opacity-80 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">›</span>
           </span>
         </a>
       );
@@ -376,25 +394,21 @@
       return (
         <div id="top" className="relative isolate">
           <HeroBackdrop />
-          <Section className="relative pb-16 pt-32 sm:pb-20 sm:pt-40">
+          <Section className="relative pb-14 pt-28 sm:pb-20 sm:pt-32">
             <Reveal className="flex flex-col items-center text-center">
               <RatingBadge />
-              {/* One line from lg up — wraps balanced below, where it cannot fit */}
-              <h1 className="mt-7 text-[34px] font-extrabold leading-[1.08] tracking-[-0.03em] text-white [text-wrap:balance] sm:text-[52px] lg:whitespace-nowrap lg:text-[64px] xl:text-[72px]">
-                Watch Korean TV for free
+              <h1 className="mt-6 text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-white [text-wrap:balance] sm:mt-7 sm:whitespace-nowrap sm:text-[54px]">
+                Watch Korean TV for Free
               </h1>
-              <p className="mt-5 max-w-md text-sm text-grey40 sm:text-base">
-                K-dramas, movies, variety and K-pop — live and on demand. No signup, no fee.
-              </p>
 
               {/* Where you can watch */}
-              <ul className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:gap-x-11">
+              <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:mt-9 sm:gap-x-[50px]">
                 {PLATFORMS.map((p) => (
                   <li key={p.name}>
                     <img
                       src={p.src}
                       alt={p.name}
-                      className="w-auto opacity-75 transition-opacity duration-200 hover:opacity-100"
+                      className="w-auto opacity-90 transition-opacity duration-200 hover:opacity-100"
                       style={{ height: p.h }}
                     />
                   </li>
@@ -402,33 +416,26 @@
               </ul>
             </Reveal>
 
-            {/* The two devices we can install to right now */}
-            <Reveal className="mx-auto mt-12 grid max-w-4xl gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5">
+            {/* The two platforms with working one-click install links */}
+            <Reveal className="mt-9 grid gap-4 sm:mt-11 sm:grid-cols-2 sm:gap-5">
               <InstallCard
                 eyebrow="Using Roku?"
                 cta="Install on Roku"
                 logo="assets/logo-roku.png"
-                logoHeight={19}
-                brandBg="#6f1ab1"
+                logoHeight={17}
+                brandBg="#313DAD"
                 brandFg="#ffffff"
-                glow="radial-gradient(circle, #8b2bd6, transparent 70%)"
+                photo="assets/card-roku.jpg"
               />
               <InstallCard
                 eyebrow="Using Fire TV?"
                 cta="Install on Fire TV"
                 logo="assets/logo-firetv.png"
-                logoHeight={24}
-                brandBg="#ff9900"
-                brandFg="#10160E"
-                glow="radial-gradient(circle, #ff9900, transparent 70%)"
+                logoHeight={22}
+                brandBg="#E5621B"
+                brandFg="#ffffff"
+                photo="assets/card-firetv.jpg"
               />
-            </Reveal>
-
-            <Reveal className="mt-5 text-center text-xs text-grey60">
-              On Samsung, LG, VIZIO or Google TV?{' '}
-              <a href="#install" className="font-semibold text-grey40 underline underline-offset-4 transition-colors hover:text-lime">
-                See all install options
-              </a>
             </Reveal>
           </Section>
         </div>
