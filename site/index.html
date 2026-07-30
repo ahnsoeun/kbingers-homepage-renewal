@@ -7,6 +7,9 @@
   <meta name="description" content="The Only 24/7 Premium Korean content FAST/AVOD Streaming Platform. K-dramas, K-movies, K-pop, variety and K-food. All free." />
 
   <!-- ⚠️ 모든 CDN 은 버전 고정. Babel 은 반드시 7.x (8.x 는 인라인 text/babel 미지원). -->
+  <!-- Poppins for Latin; Pretendard stays loaded because Poppins has no Korean glyphs -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
@@ -22,6 +25,7 @@
         extend: {
           colors: {
             lime: '#D3F47C',
+            install: '#2F6BFF',   // accent for the light 1-Click Install band
             live: '#F03838',
             grey10: '#F2F2F2',
             grey40: '#ADADAE',
@@ -32,7 +36,7 @@
             bg: '#10160E',
           },
           fontFamily: {
-            sans: ['Pretendard', 'system-ui', 'sans-serif'],
+            sans: ['Poppins', 'Pretendard', 'system-ui', 'sans-serif'],
           },
         },
       },
@@ -41,10 +45,10 @@
 
   <style>
     html { scroll-behavior: smooth; }
-    body { background:#10160E; color:#fff; font-family:'Pretendard',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+    body { background:#10160E; color:#fff; font-family:'Poppins','Pretendard',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
 
     /* Headings baseline */
-    .kb-display { font-weight:800; letter-spacing:-0.02em; text-transform:uppercase; line-height:1.02; }
+    .kb-display { font-weight:600; letter-spacing:-0.02em; text-transform:uppercase; line-height:1.02; }
 
     /* ---- Infinite marquees ---- */
     @keyframes kb-scroll-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
@@ -76,6 +80,12 @@
 
     /* Korean copy breaks on word boundaries, not mid-word */
     .kb-ko { word-break: keep-all; }
+
+    /* Platform wordmarks scale as one set: each logo keeps its own tuned size and
+       they all shrink by the same factor on narrow screens. */
+    .kb-logorow { --logo-scale: 0.72; }
+    @media (min-width: 480px) { .kb-logorow { --logo-scale: 0.85; } }
+    @media (min-width: 640px) { .kb-logorow { --logo-scale: 1; } }
   </style>
 </head>
 <body>
@@ -91,10 +101,12 @@
     // 🎨 DESIGN SYSTEM COMPONENTS
     // ========================================
 
-    // Small lime uppercase section-label pill
-    function SectionLabel({ children, className = '' }) {
+    // Small uppercase section-label pill. `onLight` swaps to the dark brand green so
+    // the pill reads on the light 1-Click Install band as well as on dark sections.
+    function SectionLabel({ children, onLight = false, className = '' }) {
+      const tone = onLight ? 'bg-install/10 text-install' : 'bg-install/[0.18] text-[#7FA5FF]';
       return (
-        <span className={`inline-block rounded-full bg-lime/15 px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-lime ${className}`}>
+        <span className={`inline-block rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${tone} ${className}`}>
           {children}
         </span>
       );
@@ -118,6 +130,48 @@
         <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...rest}>
           {children}
         </button>
+      );
+    }
+
+    // Chevron — drawn rather than set as the "›" glyph, which renders as a thin
+    // typographic mark and sits off the optical centre at UI sizes.
+    function Chevron({ size = 16, className = '' }) {
+      return (
+        <svg
+          width={size} height={size} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          className={`shrink-0 ${className}`} aria-hidden="true"
+        >
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      );
+    }
+
+    // Star rating. Drawn rather than set with the ★ glyph because a half star has no
+    // glyph — each star's fill is a hard gradient stop at its own fill fraction.
+    function Stars({ value = 4.5, size = 11, gap = 2.5, className = '' }) {
+      const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
+      return (
+        <span className={`flex items-center ${className}`} style={{ gap }} aria-hidden="true">
+          {[0, 1, 2, 3, 4].map((i) => {
+            const fill = Math.max(0, Math.min(1, value - i));
+            const id = `star-${uid}-${i}`;
+            return (
+              <svg key={i} width={size} height={size} viewBox="0 0 24 24" className="shrink-0">
+                <defs>
+                  <linearGradient id={id} x1="0" y1="0" x2="1" y2="0">
+                    <stop offset={fill} stopColor="currentColor" />
+                    <stop offset={fill} stopColor="currentColor" stopOpacity="0.28" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M12 1.9l3.09 6.26 6.91 1.01-5 4.87 1.18 6.88L12 17.67l-6.18 3.25L7 14.04 2 9.17l6.91-1.01z"
+                  fill={`url(#${id})`}
+                />
+              </svg>
+            );
+          })}
+        </span>
       );
     }
 
@@ -168,7 +222,7 @@
         <div className="kb-marquee relative overflow-hidden" aria-hidden="true">
           <div className="kb-marquee-track kb-anim-left" style={{ '--dur': dur }}>
             {doubled.map((label, i) => (
-              <span key={i} className="mx-8 select-none whitespace-nowrap text-lg font-extrabold uppercase tracking-wide text-grey60 sm:text-xl">
+              <span key={i} className="mx-8 select-none whitespace-nowrap text-lg font-semibold uppercase tracking-wide text-grey60 sm:text-xl">
                 {label}
               </span>
             ))}
@@ -180,15 +234,27 @@
     // ========================================
     // Data
     // ========================================
-    // Brand wordmarks exported from Figma. Heights match the design's optical sizing —
-    // each logo has a different cap height, so a single shared height reads unbalanced.
+    // Brand wordmarks exported from Figma, trimmed to their ink bounds. 20px is the
+    // shared height; LG and Fire TV get 26px because their marks are not lettering
+    // alone — LG carries a circular badge, Fire TV a smile arc beneath the words — so
+    // at a common box height their letters render noticeably smaller than the rest.
+    const LOGO_HEIGHT = 20;
     const PLATFORMS = [
-      { name: 'Samsung TV', src: 'assets/logo-samsung.png',  h: 15 },
-      { name: 'LG TV',      src: 'assets/logo-lg.png',       h: 24 },
-      { name: 'Roku',       src: 'assets/logo-roku.png',     h: 19 },
-      { name: 'Fire TV',    src: 'assets/logo-firetv.png',   h: 25 },
-      { name: 'VIZIO',      src: 'assets/logo-vizio.png',    h: 15 },
-      { name: 'Google TV',  src: 'assets/logo-googletv.png', h: 20 },
+      { name: 'Samsung TV', src: 'assets/logo-samsung.png' },
+      { name: 'LG TV',      src: 'assets/logo-lg.png',     h: 26 },
+      { name: 'Roku',       src: 'assets/logo-roku.png',   w: 48 },
+      { name: 'Fire TV',    src: 'assets/logo-firetv.png', h: 26 },
+      { name: 'VIZIO',      src: 'assets/logo-vizio.png',   w: 80 },
+      { name: 'Google TV',  src: 'assets/logo-googletv.png' },
+    ];
+
+    // Same six platforms as install links. Heights are smaller than the wordmark row
+    // and follow the same rule: pure lettering sits lower, marks-with-glyphs sit higher.
+    const PLATFORM_LINKS = [
+      { name: 'Samsung TV', src: 'assets/logo-samsung.png',  h: 10 },
+      { name: 'LG TV',      src: 'assets/logo-lg.png',       h: 18 },
+      { name: 'VIZIO',      src: 'assets/logo-vizio.png',    h: 12 },
+      { name: 'Google TV',  src: 'assets/logo-googletv.png', h: 14 },
     ];
 
     // Gradient palette for content thumbnails
@@ -265,7 +331,7 @@
           {/* Hairline sits inside the max-width rail, matching the design */}
           <nav className="mx-auto flex max-w-[1200px] items-center justify-between border-b border-white/15 px-5 py-4 sm:px-8">
             <a href="#top" aria-label="Kbingers home" className="inline-flex items-center">
-              <img src="assets/logo-kbingers.png" alt="Kbingers" className="h-7 w-auto sm:h-8" />
+              <img src="assets/logo-kbingers.png" alt="Kbingers" className="h-auto w-[90px]" />
             </a>
             <div className="hidden items-center gap-8 md:flex">
               {NAV_LINKS.map((l) => (
@@ -307,16 +373,21 @@
     // ⭐ App-store rating — laurel wreath flanking the score, per the design
     function RatingBadge() {
       return (
-        <div className="flex items-center justify-center gap-1.5">
-          <img src="assets/laurel-left.png" alt="" aria-hidden="true" className="h-[52px] w-auto sm:h-[62px]" />
-          <div className="flex flex-col items-center px-1">
-            <span className="text-[28px] font-bold leading-none text-white sm:text-[33px]">4.2</span>
-            <span className="mt-1.5 text-[11px] leading-none tracking-[0.1em] text-white sm:text-[13px]" aria-hidden="true">
-              ★★★★★
-            </span>
+        <div className="flex flex-col items-center">
+          <div className="flex items-center justify-center gap-1.5">
+            <img src="assets/laurel-left.png" alt="" aria-hidden="true" className="h-[52px] w-auto opacity-80 sm:h-[62px]" />
+            <div className="flex flex-col items-center px-1">
+              <span className="text-[28px] font-semibold leading-[0.9] text-white sm:text-[33px]">4.5</span>
+              <Stars value={4.5} size={11} className="mt-[7px] text-white" />
+            </div>
+            <img src="assets/laurel-right.png" alt="" aria-hidden="true" className="h-[52px] w-auto opacity-80 sm:h-[62px]" />
           </div>
-          <img src="assets/laurel-right.png" alt="" aria-hidden="true" className="h-[52px] w-auto sm:h-[62px]" />
-          <span className="sr-only">Rated 4.2 out of 5 on the App Store</span>
+          {/* Sits under the whole wreath rather than inside it — the laurels leave too
+              little width between them for a line this long. */}
+          <span className="mt-[10px] text-[10px] font-light leading-none tracking-[0.04em] text-white/55 sm:text-[11px]">
+            Based on Viewer Feedback
+          </span>
+          <span className="sr-only">Rated 4.5 out of 5, based on viewer feedback</span>
         </div>
       );
     }
@@ -353,28 +424,42 @@
       );
     }
 
-    // Platform install card — copy up top, brand CTA, device photo bleeding off the base
-    function InstallCard({ eyebrow, cta, logo, logoHeight, brandBg, brandFg, photo, href = '#install' }) {
+    // TEMPORARY card artwork. Real photography is coming — when it lands, replace this
+    // whole component with a single <img className="absolute inset-0 h-full w-full
+    // object-cover" /> and nothing else in InstallCard needs to change.
+    function CardPlaceholder({ tint }) {
+      return (
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-0" style={{ background: tint }} />
+          <div
+            className="absolute inset-0 opacity-[0.05]"
+            style={{ backgroundImage: 'repeating-linear-gradient(135deg,#fff 0 1px,transparent 1px 11px)' }}
+          />
+        </div>
+      );
+    }
+
+    // Platform install card — copy up top, brand CTA, artwork filling the card
+    function InstallCard({ platform, cta, logo, logoHeight, brandBg, brandFg, tint, href = '#install' }) {
       return (
         <a
           href={href}
-          className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90/50 px-5 pt-7 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-9"
+          className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90 px-5 pt-7 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-9"
         >
-          {/* Device photo sits on the base and fades up into the card */}
-          <img
-            src={photo}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[112px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] sm:h-[150px]"
-          />
-          {/* Fades the photo's top edge into the card face instead of a hard seam */}
+          <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.03]">
+            <CardPlaceholder tint={tint} />
+          </div>
+          {/* Scrim runs from the very top so the copy sits on solid dark and the
+              artwork emerges lower down */}
           <span
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[112px] sm:h-[150px]"
-            style={{ background: 'linear-gradient(to bottom, #10160E, rgba(16,22,14,0.15) 42%, rgba(16,22,14,0) 70%)' }}
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'linear-gradient(to bottom, #10160E 0%, rgba(16,22,14,0.94) 26%, rgba(16,22,14,0.62) 48%, rgba(16,22,14,0.22) 68%, rgba(16,22,14,0.05) 100%)' }}
             aria-hidden="true"
           />
 
-          <span className="relative text-[13px] font-light text-white/85 sm:text-[15px]">{eyebrow}</span>
+          <span className="relative text-[16px] font-light text-white/85">
+            Have a <span className="font-semibold text-white">{platform}</span>?
+          </span>
           <span className="relative mt-1.5 text-[26px] font-semibold leading-tight tracking-tight text-white sm:text-[34px]">
             Install in One Click
           </span>
@@ -383,8 +468,8 @@
             style={{ background: brandBg, color: brandFg }}
           >
             <img src={logo} alt="" className="w-auto shrink-0" style={{ height: logoHeight }} />
-            <span className="flex-1 text-left text-[13px] font-bold sm:text-sm">{cta}</span>
-            <span className="text-base leading-none opacity-80 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">›</span>
+            <span className="flex-1 text-left text-[13px] font-normal sm:text-sm">{cta}</span>
+            <Chevron size={17} className="opacity-80 transition-transform duration-200 group-hover:translate-x-1" />
           </span>
         </a>
       );
@@ -397,24 +482,26 @@
           <Section className="relative pb-14 pt-28 sm:pb-20 sm:pt-32">
             <Reveal className="flex flex-col items-center text-center">
               <RatingBadge />
-              <h1 className="mt-6 text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-white [text-wrap:balance] sm:mt-7 sm:whitespace-nowrap sm:text-[54px]">
+              <h1 className="mt-6 text-[32px] font-semibold leading-[1.1] tracking-[-0.02em] text-white [text-wrap:balance] sm:whitespace-nowrap sm:text-[54px]">
                 Watch Korean TV for Free
               </h1>
 
               {/* Subhead — Pretendard Light 19px in the comp (node 13232:4110) */}
-              <p className="mt-4 max-w-lg text-[17px] font-light leading-snug text-white [text-wrap:balance] sm:max-w-none sm:text-[19px]">
-                Enjoy K-Dramas, Movies, TV Shows &amp; More on Your TV
+              <p className="mt-4 max-w-lg text-[18px] font-light leading-snug text-white/75 [text-wrap:balance] sm:max-w-none">
+                Enjoy K-Dramas, Movies, TV Shows, K-POP &amp; More on Your TV
               </p>
 
               {/* Where you can watch */}
-              <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:mt-5 sm:gap-x-[50px]">
+              <ul className="kb-logorow mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-[50px] sm:gap-y-5">
                 {PLATFORMS.map((p) => (
                   <li key={p.name}>
                     <img
                       src={p.src}
                       alt={p.name}
                       className="w-auto opacity-90 transition-opacity duration-200 hover:opacity-100"
-                      style={{ height: p.h }}
+                      style={p.w
+                        ? { width: `calc(${p.w}px * var(--logo-scale, 1))` }
+                        : { height: `calc(${p.h || LOGO_HEIGHT}px * var(--logo-scale, 1))` }}
                     />
                   </li>
                 ))}
@@ -424,23 +511,30 @@
             {/* The two platforms with working one-click install links */}
             <Reveal className="mt-9 grid gap-4 sm:mt-11 sm:grid-cols-2 sm:gap-5">
               <InstallCard
-                eyebrow="Using Roku?"
+                platform="Roku"
                 cta="Install on Roku"
                 logo="assets/logo-roku.png"
-                logoHeight={17}
+                logoHeight={22}
                 brandBg="#313DAD"
                 brandFg="#ffffff"
-                photo="assets/card-roku.jpg"
+                tint="radial-gradient(130% 105% at 35% 112%, rgba(49,61,173,0.62), rgba(16,22,14,0) 74%)"
               />
               <InstallCard
-                eyebrow="Using Fire TV?"
+                platform="Fire TV"
                 cta="Install on Fire TV"
                 logo="assets/logo-firetv.png"
                 logoHeight={22}
                 brandBg="#E5621B"
                 brandFg="#ffffff"
-                photo="assets/card-firetv.jpg"
+                tint="radial-gradient(130% 105% at 35% 112%, rgba(229,98,27,0.52), rgba(16,22,14,0) 74%)"
               />
+            </Reveal>
+
+            {/* Quick platform links, directly under the cards */}
+            <Reveal className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {PLATFORM_LINKS.map((p) => (
+                <InstallButton key={p.name} onDark name={`Install on ${p.name}`} href="#install" />
+              ))}
             </Reveal>
           </Section>
         </div>
@@ -476,80 +570,100 @@
       );
     }
 
-    // Device mock + numbered label side-by-side (stacked on mobile)
+    // Device on top, badge+title row below it, caption below that — every
+    // step stacks the same three blocks in the same order, so the badge row
+    // always starts at deviceSlotHeight + gap from the top of its column,
+    // identical for all three steps regardless of device shape or caption
+    // length. The device slot is a fixed height so the phone (tall) and the
+    // TVs (short + stand) share one visual centreline instead of each
+    // dragging its row to a different height. The caption gets a fixed
+    // min-height sized for its longest (3-line) case so all three blocks
+    // read as the same size even though the Korean copy wraps unevenly.
     function InstallStep({ n, title, caption, children }) {
       return (
-        <li className="flex flex-1 items-center gap-4">
-          {children}
-          <div className="flex min-w-0 flex-col gap-1.5">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#2f6bff] text-[10px] font-black text-white">
-                {n}
-              </span>
-              <h3 className="whitespace-nowrap text-[13px] font-extrabold tracking-tight text-grey90">{title}</h3>
-            </div>
-            <p className="kb-ko text-xs leading-relaxed text-grey60">{caption}</p>
+        <li className="flex w-full flex-col items-center text-center lg:w-[248px]">
+          {/* items-end puts the phone and the two TV stands on one baseline — centring
+              them instead leaves the shorter sets floating in the slot */}
+          <div className="flex h-28 w-full items-end justify-center pb-1">
+            {children}
+          </div>
+          <div className="mt-5 flex items-center gap-2">
+            <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-install text-[11px] font-black text-white">
+              {n}
+            </span>
+            <h3 className="whitespace-nowrap text-[16px] font-semibold tracking-tight text-grey90">{title}</h3>
+          </div>
+          <p className="mt-2 min-h-[3.4em] max-w-[230px] text-[14px] leading-relaxed text-grey60">{caption}</p>
+        </li>
+      );
+    }
+
+    // Arrow sits inside the same fixed-height slot as the device mocks in
+    // InstallStep, so its vertical centre always lines up with theirs —
+    // regardless of the connector's own li height in the row.
+    function Connector() {
+      return (
+        <li className="hidden shrink-0 lg:block" aria-hidden="true">
+          {/* same slot height as a step, arrow parked level with the screens */}
+          <div className="flex h-28 items-end justify-center pb-[34px]">
+            <span className="text-lg text-grey40">→</span>
           </div>
         </li>
       );
     }
 
-    function Connector() {
+    // Platform install link — logo, label, chevron. `onDark` flips it for the hero,
+    // where the wordmarks are already white and must not be inverted.
+    function InstallButton({ name, logo, logoHeight, href, primary = false, onDark = false }) {
+      const tone = onDark
+        ? 'border-white/15 bg-white/[0.04] hover:-translate-y-0.5 hover:border-white/35 hover:bg-white/[0.08]'
+        : primary
+          ? 'border-grey90/15 bg-white shadow-sm hover:-translate-y-0.5 hover:border-lime/50 hover:shadow-md'
+          : 'border-grey90/10 bg-white/60 hover:-translate-y-0.5 hover:border-grey90/25 hover:bg-white';
       return (
-        <li className="hidden shrink-0 self-center text-lg text-grey40 lg:block" aria-hidden="true">→</li>
-      );
-    }
-
-    // Platform install link — logo, label, chevron. Roku and Fire TV lead because
-    // those are the two that already have working deep links.
-    function InstallButton({ name, logo, logoHeight, href, primary = false }) {
-      const tone = primary
-        ? 'border-grey90/15 bg-white shadow-sm hover:border-[#2f6bff]/40 hover:shadow-md'
-        : 'border-grey90/10 bg-white/60 hover:border-grey90/25 hover:bg-white';
-      return (
-        <a href={href} className={`group flex items-center gap-4 rounded-xl border px-5 py-3.5 transition-all duration-200 hover:-translate-y-0.5 ${tone}`}>
-          <img src={logo} alt="" className="w-auto shrink-0 invert" style={{ height: logoHeight }} />
-          <span className="flex-1 text-left text-sm font-semibold text-grey75">{name}</span>
-          <span className="text-base leading-none text-grey40 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">›</span>
+        <a href={href} className={`group flex items-center gap-2 rounded-xl border px-5 py-3.5 transition-all duration-200 ${tone}`}>
+          {logo && (
+            <img src={logo} alt="" className={`w-auto shrink-0 ${onDark ? '' : 'invert'}`} style={{ height: logoHeight }} />
+          )}
+          <span className={`flex-1 whitespace-nowrap text-left text-[14px] font-normal ${onDark ? 'text-white' : 'text-grey75'}`}>{name}</span>
+          <Chevron size={16} className={`transition-transform duration-200 group-hover:translate-x-1 ${onDark ? 'text-white/50' : 'text-grey40'}`} />
         </a>
       );
     }
 
     function OneClickInstall() {
       return (
-        <section id="install" className="bg-[#F1F0F2] py-16 text-grey90 sm:py-20">
-          {/* Wider rail than the dark sections — the step flow needs the horizontal room */}
-          <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
-            <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-10">
-              {/* Copy rail */}
-              <Reveal className="lg:w-[264px] lg:shrink-0">
-                <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#2f6bff]">1-Click Install</span>
-                <h2 className="mt-3 text-[26px] font-extrabold leading-[1.22] tracking-tight text-grey90">
-                  {/* nbsp keeps "3 simple steps" intact, so the break lands after "in" */}
-                  Install on your TV in 3 simple steps
+        <section id="install" className="bg-[#F1F0F2] py-20 text-grey90 sm:py-28">
+          <div className="mx-auto w-full max-w-[1200px] px-5 text-center sm:px-8">
+            <div className="flex flex-col">
+              {/* Centred header, same rhythm as the dark sections */}
+              <Reveal>
+                <SectionLabel onLight>1-Click Install</SectionLabel>
+                <h2 className="kb-display mt-5 text-3xl text-grey90 sm:text-[40px]">
+                  Install on your TV in 3 simple steps
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-grey60">
+                <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-grey60">
                   Get Kbingers on your TV from your phone in minutes.
                 </p>
               </Reveal>
 
               {/* Step flow */}
-              <Reveal as="ol" className="flex flex-1 flex-col gap-8 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:items-start lg:gap-5">
-                <InstallStep n="1" title="Tap Install" caption="휴대폰에서 설치 버튼을 클릭하세요.">
+              <Reveal as="ol" className="mx-auto mt-12 flex max-w-[980px] flex-col items-center gap-10 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-2">
+                <InstallStep n="1" title="Tap Install" caption="Click the install button on your phone.">
                   <PhoneMock />
                 </InstallStep>
                 <Connector />
-                <InstallStep n="2" title="Confirm Account" caption="TV와 연결된 계정을 확인하세요.">
+                <InstallStep n="2" title="Confirm Account" caption="Verify the TV account connected to your device.">
                   <TvMock>
                     <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
                       <span className="text-[6px] font-medium text-grey40">Confirm your account</span>
                       <span className="w-full truncate rounded-sm bg-white/10 px-1 py-[3px] text-[6px] text-white">amy.kim@email.com</span>
-                      <span className="rounded-full bg-[#2f6bff] px-2 py-[2px] text-[6px] font-bold text-white">Confirm</span>
+                      <span className="rounded-full bg-install px-2 py-[2px] text-[6px] font-bold text-white">Confirm</span>
                     </div>
                   </TvMock>
                 </InstallStep>
                 <Connector />
-                <InstallStep n="3" title="Start Watching" caption="TV에 앱이 자동으로 설치되고 바로 시청을 시작하세요.">
+                <InstallStep n="3" title="Start Watching" caption="The app is automatically installed on your TV.">
                   <TvMock>
                     <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-lime text-[10px] font-black text-grey90">✓</span>
@@ -560,13 +674,6 @@
               </Reveal>
             </div>
 
-            {/* Platform install links */}
-            <Reveal className="mt-12 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <InstallButton primary name="Install on Roku"    logo="assets/logo-roku.png"    logoHeight={17} href="#install" />
-              <InstallButton primary name="Install on Fire TV" logo="assets/logo-firetv.png"  logoHeight={22} href="#install" />
-              <InstallButton         name="Samsung TV"         logo="assets/logo-samsung.png" logoHeight={13} href="#install" />
-              <InstallButton         name="LG TV"              logo="assets/logo-lg.png"      logoHeight={20} href="#install" />
-            </Reveal>
           </div>
         </section>
       );
@@ -610,14 +717,6 @@
             </div>
           </Reveal>
 
-          {/* Platform pill buttons */}
-          <Reveal className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            {PLATFORMS.map((p) => (
-              <span key={p.name} className="flex items-center rounded-[10px] border border-white/50 bg-[#141414] px-5 py-3.5 transition hover:border-lime">
-                <img src={p.src} alt={p.name} className="w-auto" style={{ height: p.h }} />
-              </span>
-            ))}
-          </Reveal>
         </Section>
       );
     }
@@ -632,7 +731,7 @@
           <div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0" />
           {item.live && <div className="absolute right-2 top-2"><LiveBadge /></div>}
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-            <p className="text-sm font-extrabold uppercase leading-tight text-white drop-shadow sm:text-base">{item.title}</p>
+            <p className="text-sm font-semibold uppercase leading-tight text-white drop-shadow sm:text-base">{item.title}</p>
             <p className="mt-0.5 text-[10px] font-medium text-white/70 sm:text-xs">{item.sub}</p>
           </div>
         </div>
@@ -719,7 +818,7 @@
                 <div className="grid items-center gap-8 md:grid-cols-2">
                   <ChannelUIMock />
                   <div className="text-left">
-                    <h3 className="text-2xl font-extrabold text-white">Channel</h3>
+                    <h3 className="text-2xl font-semibold text-white">Channel</h3>
                     <p className="mt-4 text-sm leading-relaxed text-grey40">
                       Kbingers provides a curated environment for viewers to indulge in a variety of K-content genres with 24/7 live streaming, tailored to their preferences. It offers an optimized user experience (UX/UI) for easy content discovery across genres, comprehensive and individual IP channels. In addition to genre-based channels, viewers can binge-watch their desired content on a per-IP basis, maximizing their viewing pleasure.
                     </p>
@@ -733,7 +832,7 @@
               <Card className="bg-grey10 p-6 text-grey90 sm:p-10">
                 <div className="grid items-center gap-8 md:grid-cols-2">
                   <div className="text-left">
-                    <h3 className="text-2xl font-extrabold text-grey90">On Demand</h3>
+                    <h3 className="text-2xl font-semibold text-grey90">On Demand</h3>
                     <p className="mt-4 text-sm leading-relaxed text-grey60">
                       Kbingers provides a convenient service that allows users to select and watch their favorite K-content for free at any time. It offers the flexibility to enjoy a wide variety of Korean genres and topics. The intuitive user interface and search functions make it easy to find specific programs or movies, creating a more seamless viewing experience for users.
                     </p>
@@ -813,34 +912,40 @@
       return (
         <footer id="newid" className="border-t border-white/10 py-12">
           <Section>
-            <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-start md:justify-between md:text-left">
-              <div>
-                <Wordmark className="text-xl" />
-                <div className="mt-4 flex justify-center gap-3 md:justify-start">
-                  <SocialIcon label="X (Twitter)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  </SocialIcon>
-                  <SocialIcon label="TikTok">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-                  </SocialIcon>
-                  <SocialIcon label="Instagram">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-                  </SocialIcon>
-                </div>
+            {/* Three columns, as on bingekorea.tv: socials left, wordmark + tagline
+                centred, nav right — with a hairline under the row. */}
+            <div className="flex flex-col items-center gap-8 border-b border-white/15 pb-8 text-center md:flex-row md:items-center md:justify-between md:gap-4">
+              <div className="flex gap-2.5 md:flex-1">
+                <SocialIcon label="X (Twitter)">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </SocialIcon>
+                <SocialIcon label="TikTok">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                </SocialIcon>
+                <SocialIcon label="Instagram">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                </SocialIcon>
               </div>
 
-              <p className="max-w-xs text-sm text-grey40">Korean TV all day, everyday. All free.</p>
+              <div className="flex flex-col items-center gap-5">
+                <a href="#top" aria-label="Kbingers home">
+                  <img src="assets/logo-kbingers.png" alt="Kbingers" className="h-auto w-[111px]" />
+                </a>
+                <p className="text-sm leading-[21px] text-[#ccc]">
+                  Korean TV All day,<br />everyday. All Free.
+                </p>
+              </div>
 
-              <nav className="flex flex-col gap-2 text-sm md:items-end">
-                <a href="#service" className="text-grey10/90 transition hover:text-lime">Services</a>
-                <a href="#channels" className="text-grey10/90 transition hover:text-lime">Channels</a>
-                <a href="#how-to-watch" className="text-grey10/90 transition hover:text-lime">How to watch</a>
+              <nav className="flex flex-wrap items-center justify-center gap-x-[30px] gap-y-2 md:flex-1 md:justify-end">
+                <a href="#service" className="text-[14px] font-medium text-white transition hover:text-lime">Services</a>
+                <a href="#channels" className="text-[14px] font-medium text-white transition hover:text-lime">Channels</a>
+                <a href="#how-to-watch" className="text-[14px] font-medium text-white transition hover:text-lime">How to watch</a>
               </nav>
             </div>
 
-            <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-grey60">
-              © 2025 by NEW ID Co., Ltd.
-            </div>
+            <p className="mt-5 text-center text-xs tracking-[-0.02em] text-[#8a8a8a]">
+              © 2026 by NEW ID Co.,Ltd.
+            </p>
           </Section>
         </footer>
       );
