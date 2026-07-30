@@ -689,7 +689,6 @@
     // 📄 How to Watch — SEE YOU ON TV
     // ========================================
     function HowToWatch() {
-      const [playing, setPlaying] = useState(false);
       return (
         <Section id="how-to-watch" className="py-20 text-center sm:py-28">
           <Reveal>
@@ -697,37 +696,28 @@
             <h2 className="kb-display mt-5 text-3xl text-white sm:text-5xl">See you on TV</h2>
           </Reveal>
 
-          {/* Video player placeholder */}
+          {/* Same embed and parameters bingekorea.tv uses. loop needs `playlist` set to
+              the same id — on a single video it is otherwise ignored. mute is not a
+              preference: browsers block autoplay with sound. loading="lazy" holds the
+              player back until the section nears the viewport, so it costs nothing on
+              first paint and starts as the viewer arrives. */}
           <Reveal className="mt-10">
-            <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10"
-                 style={{ background: 'linear-gradient(135deg,#241243,#5b1f9e 55%,#2a3f6b)' }}
-                 role="img" aria-label="Kbingers video player showing a K-pop performance">
-              <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(70% 60% at 50% 40%, rgba(211,244,124,0.12), transparent)' }} />
-              <button
-                onClick={() => setPlaying((v) => !v)}
-                className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur transition hover:scale-110 hover:bg-white/30"
-                aria-label={playing ? 'Pause video' : 'Play video'}
-              >
-                {playing ? '❚❚' : '▶'}
-              </button>
-              {/* progress bar */}
-              <div className="absolute inset-x-4 bottom-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-[11px] font-medium text-white/80">01:24</span>
-                  <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/25">
-                    <div className="h-full rounded-full bg-lime transition-all" style={{ width: playing ? '48%' : '32%' }} />
-                  </div>
-                  <span className="text-[11px] font-medium text-white/60">03:57</span>
-                </div>
-              </div>
+            <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-black">
+              <iframe
+                className="absolute inset-0 h-full w-full"
+                src="https://www.youtube.com/embed/cU8H8ElxJXI?iv_load_policy=3&rel=0&modestbranding=1&playsinline=1&autoplay=1&mute=1&loop=1&playlist=cU8H8ElxJXI"
+                title="Kbingers on TV"
+                loading="lazy"
+                frameBorder="0"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope"
+                allowFullScreen
+              />
             </div>
           </Reveal>
-
         </Section>
       );
     }
 
-    // ========================================
     // 📄 Content grid — auto-scrolling rows
     // ========================================
     function ContentCard({ item }) {
