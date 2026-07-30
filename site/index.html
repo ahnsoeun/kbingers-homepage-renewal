@@ -103,10 +103,15 @@
 
     // Small uppercase section-label pill. `onLight` swaps to the dark brand green so
     // the pill reads on the light 1-Click Install band as well as on dark sections.
-    function SectionLabel({ children, onLight = false, className = '' }) {
-      const tone = onLight ? 'bg-install/10 text-install' : 'bg-install/[0.18] text-[#7FA5FF]';
+    function SectionLabel({ children, onLight = false, bolt = false, className = '' }) {
+      const tone = onLight ? 'bg-lime text-grey90' : 'bg-lime/15 text-lime';
       return (
-        <span className={`inline-block rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${tone} ${className}`}>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.18em] ${tone} ${className}`}>
+          {bolt && (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="shrink-0">
+              <path d="M13 2L4.5 13.5H11l-1 8.5 8.5-11.5H12z" />
+            </svg>
+          )}
           {children}
         </span>
       );
@@ -240,7 +245,7 @@
     // at a common box height their letters render noticeably smaller than the rest.
     const LOGO_HEIGHT = 20;
     const PLATFORMS = [
-      { name: 'Samsung TV', src: 'assets/logo-samsung.png' },
+      { name: 'Samsung TV', src: 'assets/logo-samsung.png', w: 100 },
       { name: 'LG TV',      src: 'assets/logo-lg.png',     h: 26 },
       { name: 'Roku',       src: 'assets/logo-roku.png',   w: 48 },
       { name: 'Fire TV',    src: 'assets/logo-firetv.png', h: 26 },
@@ -514,7 +519,7 @@
                 platform="Roku"
                 cta="Install on Roku"
                 logo="assets/logo-roku.png"
-                logoHeight={22}
+                logoHeight={14}
                 brandBg="#313DAD"
                 brandFg="#ffffff"
                 tint="radial-gradient(130% 105% at 35% 112%, rgba(49,61,173,0.62), rgba(16,22,14,0) 74%)"
@@ -550,7 +555,9 @@
         <div className="relative h-[104px] w-[56px] shrink-0 rounded-[10px] border-[3px] border-grey90 bg-grey90 px-1 pb-2.5 pt-3 shadow-lg">
           <span className="absolute left-1/2 top-[5px] z-10 h-[3px] w-4 -translate-x-1/2 rounded-full bg-black/50" aria-hidden="true" />
           <div className="flex h-full flex-col items-center justify-center gap-2 rounded-[6px] bg-gradient-to-b from-grey80 to-grey90">
-            <div className="flex h-6 w-6 items-center justify-center rounded-[5px] bg-lime/20 text-[11px] font-black text-lime">K</div>
+            <div className="flex h-6 w-6 items-center justify-center rounded-[5px] bg-white/10">
+              <img src="assets/logo-app.png" alt="" aria-hidden="true" className="h-[15px] w-[15px]" />
+            </div>
             <span className="rounded-full bg-lime px-1.5 py-[2px] text-[6px] font-bold leading-none text-grey90">Install</span>
           </div>
           <span className="absolute bottom-[4px] left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-white/20" aria-hidden="true" />
@@ -581,19 +588,19 @@
     // read as the same size even though the Korean copy wraps unevenly.
     function InstallStep({ n, title, caption, children }) {
       return (
-        <li className="flex w-full flex-col items-center text-center lg:w-[248px]">
+        <li className="flex w-full flex-col items-center rounded-2xl border border-grey90/10 bg-white px-5 pb-6 pt-5 text-center shadow-[0_1px_2px_rgba(16,22,14,0.04)] lg:w-[248px]">
           {/* items-end puts the phone and the two TV stands on one baseline — centring
               them instead leaves the shorter sets floating in the slot */}
           <div className="flex h-28 w-full items-end justify-center pb-1">
             {children}
           </div>
-          <div className="mt-5 flex items-center gap-2">
-            <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-install text-[11px] font-black text-white">
-              {n}
-            </span>
-            <h3 className="whitespace-nowrap text-[16px] font-semibold tracking-tight text-grey90">{title}</h3>
-          </div>
-          <p className="mt-2 min-h-[3.4em] max-w-[230px] text-[14px] leading-relaxed text-grey60">{caption}</p>
+          <span className="mt-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-install">
+            Step {n}
+          </span>
+          <h3 className="mt-1.5 whitespace-nowrap text-[16px] font-semibold tracking-tight text-grey90">{title}</h3>
+          {/* balance evens the line lengths, so a caption never drops a single
+              trailing word ("phone.", "TV.") onto its own line */}
+          <p className="mt-2 min-h-[3.4em] text-[14px] leading-relaxed text-grey60 [text-wrap:balance]">{caption}</p>
         </li>
       );
     }
@@ -603,11 +610,10 @@
     // regardless of the connector's own li height in the row.
     function Connector() {
       return (
-        <li className="hidden shrink-0 lg:block" aria-hidden="true">
-          {/* same slot height as a step, arrow parked level with the screens */}
-          <div className="flex h-28 items-end justify-center pb-[34px]">
-            <span className="text-lg text-grey40">→</span>
-          </div>
+        // self-center rather than a fixed offset: the steps are cards now, so the
+        // arrow belongs on the card's centre line, not the device's
+        <li className="hidden shrink-0 self-center px-1 lg:block" aria-hidden="true">
+          <span className="block text-lg leading-none text-grey40">→</span>
         </li>
       );
     }
@@ -638,7 +644,7 @@
             <div className="flex flex-col">
               {/* Centred header, same rhythm as the dark sections */}
               <Reveal>
-                <SectionLabel onLight>1-Click Install</SectionLabel>
+                <SectionLabel onLight bolt>1-Click Install</SectionLabel>
                 <h2 className="kb-display mt-5 text-3xl text-grey90 sm:text-[40px]">
                   Install on your TV in 3 simple steps
                 </h2>
@@ -649,21 +655,21 @@
 
               {/* Step flow */}
               <Reveal as="ol" className="mx-auto mt-12 flex max-w-[980px] flex-col items-center gap-10 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-2">
-                <InstallStep n="1" title="Tap Install" caption="Click the install button on your phone.">
+                <InstallStep n="1" title="Tap on Mobile" caption="Open the install link on your phone.">
                   <PhoneMock />
                 </InstallStep>
                 <Connector />
-                <InstallStep n="2" title="Confirm Account" caption="Verify the TV account connected to your device.">
+                <InstallStep n="2" title="Confirm TV Account" caption="Connect to the account signed in on your TV.">
                   <TvMock>
                     <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
                       <span className="text-[6px] font-medium text-grey40">Confirm your account</span>
-                      <span className="w-full truncate rounded-sm bg-white/10 px-1 py-[3px] text-[6px] text-white">amy.kim@email.com</span>
+                      <span className="w-full truncate rounded-sm bg-white/10 px-1 py-[3px] text-[6px] text-white">binge@example.com</span>
                       <span className="rounded-full bg-install px-2 py-[2px] text-[6px] font-bold text-white">Confirm</span>
                     </div>
                   </TvMock>
                 </InstallStep>
                 <Connector />
-                <InstallStep n="3" title="Start Watching" caption="The app is automatically installed on your TV.">
+                <InstallStep n="3" title="Automatic Install" caption="The app is installed on your TV.">
                   <TvMock>
                     <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-lime text-[10px] font-black text-grey90">✓</span>
