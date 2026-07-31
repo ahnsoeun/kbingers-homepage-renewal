@@ -256,10 +256,14 @@
     // Same six platforms as install links. Heights are smaller than the wordmark row
     // and follow the same rule: pure lettering sits lower, marks-with-glyphs sit higher.
     const PLATFORM_LINKS = [
-      { name: 'Samsung TV', src: 'assets/logo-samsung.png',  h: 10 },
-      { name: 'LG TV',      src: 'assets/logo-lg.png',       h: 18 },
-      { name: 'VIZIO',      src: 'assets/logo-vizio.png',    h: 12 },
-      { name: 'Google TV',  src: 'assets/logo-googletv.png', h: 14 },
+      { name: 'Samsung TV', src: 'assets/logo-samsung.png',  h: 10,
+        href: 'https://www.samsung.com/us/tvs/smart-tv/samsung-tv-apps-detail/?appId=3202303030514' },
+      { name: 'LG TV',      src: 'assets/logo-lg.png',       h: 18,
+        href: 'https://us.lgappstv.com/main/tvapp/detail?appId=1210925&catCode1=&moreYn=N&cateYn=N&orderType=0&headerName=&appRankCode=&sellrUsrNo=' },
+      { name: 'VIZIO',      src: 'assets/logo-vizio.png',    h: 12,
+        href: 'https://www.vizio.com/en/smart-tv-apps?appName=bingekorea&appId=vizio.bingekorea' },
+      { name: 'Google TV',  src: 'assets/logo-googletv.png', h: 14,
+        href: 'https://play.google.com/store/apps/details?id=net.itsnewid.app.android.paro' },
     ];
 
     // Gradient palette for content thumbnails
@@ -307,7 +311,7 @@
     // 🧩 LAYOUT — Header
     // ========================================
     const NAV_LINKS = [
-      { label: 'NEW ID', href: '#newid' },
+      { label: 'NEW ID', href: 'https://www.its-newid.com/' },
       { label: 'How to watch', href: '#how-to-watch' },
       { label: 'Channels', href: '#channels' },
       { label: 'Services', href: '#service' },
@@ -340,7 +344,12 @@
             </a>
             <div className="hidden items-center gap-8 md:flex">
               {NAV_LINKS.map((l) => (
-                <a key={l.label} href={l.href} className="text-sm font-medium text-grey10/90 transition-colors hover:text-lime">
+                <a
+                  key={l.label}
+                  href={l.href}
+                  {...(/^https?:/.test(l.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  className="text-sm font-medium text-grey10/90 transition-colors hover:text-lime"
+                >
                   {l.label}
                 </a>
               ))}
@@ -360,8 +369,13 @@
             <div className="md:hidden border-t border-white/10 bg-grey90/95 backdrop-blur-md">
               <div className="flex flex-col px-5 py-3">
                 {NAV_LINKS.map((l) => (
-                  <a key={l.label} href={l.href} onClick={() => setOpen(false)}
-                     className="py-3 text-sm font-medium text-grey10/90 hover:text-lime">
+                  <a
+                    key={l.label}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    {...(/^https?:/.test(l.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    className="py-3 text-sm font-medium text-grey10/90 hover:text-lime"
+                  >
                     {l.label}
                   </a>
                 ))}
@@ -436,19 +450,17 @@
       return (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0" style={{ background: tint }} />
-          <div
-            className="absolute inset-0 opacity-[0.05]"
-            style={{ backgroundImage: 'repeating-linear-gradient(135deg,#fff 0 1px,transparent 1px 11px)' }}
-          />
         </div>
       );
     }
 
     // Platform install card — copy up top, brand CTA, artwork filling the card
     function InstallCard({ platform, cta, logo, logoHeight, brandBg, brandFg, tint, href = '#install' }) {
+      const external = /^https?:/.test(href);
       return (
         <a
           href={href}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90 px-5 pt-7 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-9"
         >
           <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.03]">
@@ -458,7 +470,7 @@
               artwork emerges lower down */}
           <span
             className="pointer-events-none absolute inset-0"
-            style={{ background: 'linear-gradient(to bottom, #10160E 0%, rgba(16,22,14,0.94) 26%, rgba(16,22,14,0.62) 48%, rgba(16,22,14,0.22) 68%, rgba(16,22,14,0.05) 100%)' }}
+            style={{ background: 'linear-gradient(to bottom, #10160E 0%, #10160E 34%, rgba(16,22,14,0.72) 46%, rgba(16,22,14,0.28) 60%, rgba(16,22,14,0.06) 78%, rgba(16,22,14,0) 100%)' }}
             aria-hidden="true"
           />
 
@@ -518,27 +530,29 @@
               <InstallCard
                 platform="Roku"
                 cta="Install on Roku"
+                href="https://channelstore.roku.com/details/b849223c5f9740cb52706f8f6584b568:57586ed07a34fcbdf9d65e019538beba/binge-korea-free-korean-tv"
                 logo="assets/logo-roku.png"
                 logoHeight={14}
                 brandBg="#313DAD"
                 brandFg="#ffffff"
-                tint="radial-gradient(130% 105% at 35% 112%, rgba(49,61,173,0.62), rgba(16,22,14,0) 74%)"
+                tint="radial-gradient(135% 125% at 35% 118%, rgba(49,61,173,0.78), rgba(16,22,14,0) 82%)"
               />
               <InstallCard
                 platform="Fire TV"
                 cta="Install on Fire TV"
+                href="https://www.amazon.com/dp/B0C3VT5Q6X"
                 logo="assets/logo-firetv.png"
                 logoHeight={22}
                 brandBg="#E5621B"
                 brandFg="#ffffff"
-                tint="radial-gradient(130% 105% at 35% 112%, rgba(229,98,27,0.52), rgba(16,22,14,0) 74%)"
+                tint="radial-gradient(135% 125% at 35% 118%, rgba(229,98,27,0.66), rgba(16,22,14,0) 82%)"
               />
             </Reveal>
 
             {/* Quick platform links, directly under the cards */}
             <Reveal className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {PLATFORM_LINKS.map((p) => (
-                <InstallButton key={p.name} onDark name={`Install on ${p.name}`} href="#install" />
+                <InstallButton key={p.name} onDark name={`Install on ${p.name}`} href={p.href} />
               ))}
             </Reveal>
           </Section>
@@ -626,8 +640,13 @@
         : primary
           ? 'border-grey90/15 bg-white shadow-sm hover:-translate-y-0.5 hover:border-lime/50 hover:shadow-md'
           : 'border-grey90/10 bg-white/60 hover:-translate-y-0.5 hover:border-grey90/25 hover:bg-white';
+      const external = /^https?:/.test(href);
       return (
-        <a href={href} className={`group flex items-center gap-2 rounded-xl border px-5 py-3.5 transition-all duration-200 ${tone}`}>
+        <a
+          href={href}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          className={`group flex items-center gap-2 rounded-xl border px-5 py-3.5 transition-all duration-200 ${tone}`}
+        >
           {logo && (
             <img src={logo} alt="" className={`w-auto shrink-0 ${onDark ? '' : 'invert'}`} style={{ height: logoHeight }} />
           )}
