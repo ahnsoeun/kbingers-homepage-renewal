@@ -278,23 +278,31 @@
       green:  'linear-gradient(135deg,#12401f,#2f9d4a,#c9ffd033)',
     };
 
+    // Channel thumbnails from the Kbingers library. Titles follow the artwork; the
+    // second line is the genre.
     const ROW1 = [
-      { title: 'NEW KPOP', sub: 'First and Only 24/7 K-Pop', grad: GRAD.purple, live: true },
-      { title: 'WAIKIKI 2', sub: 'Variety · Comedy', grad: GRAD.amber },
-      { title: 'Boys Over Flowers', sub: 'Classic K-Drama', grad: GRAD.rose },
-      { title: 'The Good Detective', sub: 'Crime · Thriller', grad: GRAD.slate },
+      { title: 'NEW KPOP',        sub: 'K-Pop', img: 'assets/channels/new-kpop.jpg' },
+      { title: 'NEW KMOVIES',     sub: 'Movies',         img: 'assets/channels/new-kmovies.jpg' },
+      { title: 'NEW KFOOD',       sub: 'Food · Lifestyle',          img: 'assets/channels/new-kfood.jpg' },
+      { title: 'JTBC News',       sub: 'News',         img: 'assets/channels/jtbc-news.jpg' },
+      { title: 'YG TV',           sub: 'K-Pop · Entertainment',     img: 'assets/channels/yg-tv.jpg' },
+      { title: 'K-ASMR',          sub: 'ASMR · Relaxation',            img: 'assets/channels/k-asmr.jpg' },
     ];
     const ROW2 = [
-      { title: 'JTBC News', sub: 'Live News Channel', grad: GRAD.indigo, live: true },
-      { title: 'Missing Crown Prince', sub: 'Historical Romance', grad: GRAD.teal },
-      { title: 'NEW KMOVIES', sub: '24/7 Korean Films', grad: GRAD.purple },
-      { title: 'When the Weather Is Fine', sub: 'Healing Drama', grad: GRAD.sky },
+      { title: 'Show Champion',   sub: 'K-Pop · Music',          img: 'assets/channels/show-champion.jpg' },
+      { title: 'Weekly Idol',     sub: 'Variety',             img: 'assets/channels/weekly-idol.jpg' },
+      { title: 'The Heirs',       sub: 'Romance · Drama',           img: 'assets/channels/the-heirs.jpg' },
+      { title: 'Boys Over Flowers', sub: 'Romance · Drama',         img: 'assets/channels/boys-over-flowers.jpg' },
+      { title: 'Playful Kiss',    sub: 'Romance · Comedy',           img: 'assets/channels/playful-kiss.jpg' },
+      { title: 'The Package',     sub: 'Romance · Drama',          img: 'assets/channels/the-package.jpg' },
     ];
     const ROW3 = [
-      { title: 'NEW KFOOD', sub: '24/7 Korean Food', grad: GRAD.green },
-      { title: 'WEEKLY IDOL', sub: 'K-Pop Variety', grad: GRAD.rose },
-      { title: 'K-ASMR', sub: 'Relax & Unwind', grad: GRAD.teal },
-      { title: 'THE PACKAGE', sub: 'Romance · Travel', grad: GRAD.amber },
+      { title: 'WAIKIKI 2',       sub: 'Comedy · Variety',          img: 'assets/channels/waikiki.jpg' },
+      { title: 'Agency',          sub: 'Drama',            img: 'assets/channels/agency.jpg' },
+      { title: 'The Good Detective', sub: 'Crime · Thriller',       img: 'assets/channels/good-detective.jpg' },
+      { title: 'Misty',           sub: 'Mystery · Thriller',       img: 'assets/channels/misty.jpg' },
+      { title: 'When the Weather Is Fine', sub: 'Romance · Drama',    img: 'assets/channels/when-the-weather.jpg' },
+      { title: 'Robocar Poli',    sub: 'Kids · Animation',          img: 'assets/channels/robocar-poli.jpg' },
     ];
 
     const FAQS = [
@@ -312,8 +320,8 @@
     // ========================================
     const NAV_LINKS = [
       { label: 'NEW ID', href: 'https://www.its-newid.com/' },
-      { label: 'How to watch', href: '#how-to-watch' },
-      { label: 'Channels', href: '#channels' },
+      { label: '1-Click Install', href: '#install' },
+      { label: 'Explore', href: '#how-to-watch' },
       { label: 'Services', href: '#service' },
       { label: 'FAQ', href: '#faq' },
     ];
@@ -416,12 +424,11 @@
     function HeroBackdrop() {
       return (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          {/* Height fills, width keeps the poster proportions — squeezing 2560px of wall
-              into a 1440px viewport turns the posters into unreadable slivers. Anchored
-              left so the sharp, unmirrored blocks are the ones on screen. */}
+          {/* a repeating pattern, so it crops gracefully at any aspect — no phone-specific
+              framing needed */}
           <div
-            className="absolute inset-0 bg-cover bg-center sm:bg-[length:auto_100%] sm:bg-left sm:bg-repeat-x"
-            style={{ backgroundImage: "url('assets/hero-wall.jpg')" }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('assets/hero-bg.jpg')" }}
           />
           {/* The design has a 680px margin either side of its 1200px rail, so the wall
               reads there. At normal widths there is no such margin — so instead of a
@@ -430,11 +437,12 @@
           <div
             className="absolute inset-0"
             style={{
-              backgroundColor: 'rgba(16,22,14,0.40)',
+              backgroundColor: 'rgba(16,22,14,0.62)',
               background: [
-                'radial-gradient(46% 32% at 50% 26%, rgba(16,22,14,0.86), rgba(16,22,14,0) 72%)',
-                'linear-gradient(to top, #10160E 0%, rgba(16,22,14,0) 34%)',
-                'linear-gradient(rgba(16,22,14,0.40), rgba(16,22,14,0.40))',
+                'radial-gradient(52% 38% at 50% 30%, rgba(16,22,14,0.88), rgba(16,22,14,0) 74%)',
+                'linear-gradient(to top, #10160E 0%, rgba(16,22,14,0) 42%)',
+                'linear-gradient(to bottom, rgba(16,22,14,0.85) 0%, rgba(16,22,14,0.45) 30%)',
+                'linear-gradient(rgba(16,22,14,0.62), rgba(16,22,14,0.62))',
               ].join(', '),
             }}
           />
@@ -581,8 +589,8 @@
     // TV bezel + stand — same frame language as the phone mock
     function TvMock({ children }) {
       return (
-        <div className="w-[116px] shrink-0">
-          <div className="aspect-video w-full rounded border-[3px] border-grey90 bg-grey90 p-1.5 shadow-lg">
+        <div className="w-[150px] shrink-0">
+          <div className="aspect-video w-full rounded border-[2px] border-grey90 bg-grey90 p-[2px] shadow-lg">
             {children}
           </div>
           <div className="mx-auto mt-0.5 h-2 w-4 bg-grey90/70" style={{ clipPath: 'polygon(30% 0,70% 0,100% 100%,0 100%)' }} />
@@ -602,7 +610,7 @@
     // read as the same size even though the Korean copy wraps unevenly.
     function InstallStep({ n, title, caption, children }) {
       return (
-        <li className="flex w-full flex-col items-center rounded-2xl border border-grey90/10 bg-white px-5 pb-6 pt-5 text-center shadow-[0_1px_2px_rgba(16,22,14,0.04)] lg:w-[248px]">
+        <li className="flex w-full max-w-[360px] flex-col items-center rounded-2xl border border-grey90/10 bg-white px-5 pb-6 pt-5 text-center shadow-[0_1px_2px_rgba(16,22,14,0.04)] md:max-w-[320px] md:flex-1">
           {/* items-end puts the phone and the two TV stands on one baseline — centring
               them instead leaves the shorter sets floating in the slot */}
           <div className="flex h-28 w-full items-end justify-center pb-1">
@@ -612,9 +620,9 @@
             Step {n}
           </span>
           <h3 className="mt-1.5 whitespace-nowrap text-[16px] font-semibold tracking-tight text-grey90">{title}</h3>
-          {/* balance evens the line lengths, so a caption never drops a single
-              trailing word ("phone.", "TV.") onto its own line */}
-          <p className="mt-2 min-h-[3.4em] text-[14px] leading-relaxed text-grey60 [text-wrap:balance]">{caption}</p>
+          {/* balance evens the line lengths where the caption does wrap; card heights
+              come from the row's items-stretch, so no reserved height is needed */}
+          <p className="mt-2 text-[14px] leading-relaxed text-grey60 [text-wrap:balance] xl:whitespace-nowrap">{caption}</p>
         </li>
       );
     }
@@ -626,7 +634,7 @@
       return (
         // self-center rather than a fixed offset: the steps are cards now, so the
         // arrow belongs on the card's centre line, not the device's
-        <li className="hidden shrink-0 self-center px-1 lg:block" aria-hidden="true">
+        <li className="hidden shrink-0 self-center px-1 md:block" aria-hidden="true">
           <span className="block text-lg leading-none text-grey40">→</span>
         </li>
       );
@@ -664,36 +672,41 @@
               {/* Centred header, same rhythm as the dark sections */}
               <Reveal>
                 <SectionLabel onLight bolt>1-Click Install</SectionLabel>
-                <h2 className="kb-display mt-5 text-3xl text-grey90 sm:text-[40px]">
+                <h2 className="kb-display mt-5 text-3xl text-grey90 sm:text-5xl">
                   Install on your TV in 3 simple steps
                 </h2>
-                <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-grey60">
-                  Get Kbingers on your TV from your phone in minutes.
+                <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-grey60">
+                  Tap Install. Turn on your TV. That's it.
                 </p>
               </Reveal>
 
               {/* Step flow */}
-              <Reveal as="ol" className="mx-auto mt-12 flex max-w-[980px] flex-col items-center gap-10 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-2">
-                <InstallStep n="1" title="Tap on Mobile" caption="Open the install link on your phone.">
+              <Reveal as="ol" className="mt-12 flex w-full flex-col items-center gap-8 md:flex-row md:items-stretch md:justify-center md:gap-3">
+                <InstallStep n="1" title="Tap Install" caption="Tap the install button on your phone.">
                   <PhoneMock />
                 </InstallStep>
                 <Connector />
-                <InstallStep n="2" title="Confirm TV Account" caption="Connect to the account signed in on your TV.">
+                <InstallStep n="2" title="Turn On Your TV" caption="That's it. No setup required.">
                   <TvMock>
-                    <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
-                      <span className="text-[6px] font-medium text-grey40">Confirm your account</span>
-                      <span className="w-full truncate rounded-sm bg-white/10 px-1 py-[3px] text-[6px] text-white">binge@example.com</span>
-                      <span className="rounded-full bg-install px-2 py-[2px] text-[6px] font-bold text-white">Confirm</span>
+                    {/* the app's splash, rebuilt at this size — scaling the 1920px
+                        original down would leave the wordmark illegible */}
+                    <div className="flex h-full w-full items-center justify-center rounded-[2px] bg-black">
+                      <img src="assets/logo-kbingers.png" alt="" aria-hidden="true" className="h-auto w-[62%]" />
                     </div>
                   </TvMock>
                 </InstallStep>
                 <Connector />
-                <InstallStep n="3" title="Automatic Install" caption="The app is installed on your TV.">
+                <InstallStep n="3" title="Ready to Watch" caption="Just press Play.">
                   <TvMock>
-                    <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-lime text-[10px] font-black text-grey90">✓</span>
-                      <span className="text-[6px] font-bold text-white">Installation complete</span>
-                    </div>
+                    {/* the on-demand screen: a few large shapes (hero art, title, one
+                        poster row) survive the downscale, where the channel guide's
+                        many small rows collapse into noise at this size */}
+                    <img
+                      src="assets/tv-ondemand.jpg"
+                      alt=""
+                      aria-hidden="true"
+                      className="h-full w-full rounded-[2px] object-cover"
+                    />
                   </TvMock>
                 </InstallStep>
               </Reveal>
@@ -707,31 +720,37 @@
     // ========================================
     // 📄 How to Watch — SEE YOU ON TV
     // ========================================
+    // Plays on load, muted. mute is not a preference — browsers refuse to autoplay
+    // with sound. loading="lazy" holds the request until the section nears the
+    // viewport, so it costs nothing on first paint but is running by the time the
+    // viewer arrives. loop needs `playlist` set to the same id or a single video
+    // ignores it.
+    function VideoFacade({ id, title }) {
+      return (
+        <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-black">
+          <iframe
+            className="absolute inset-0 h-full w-full"
+            src={`https://www.youtube.com/embed/${id}?iv_load_policy=3&rel=0&modestbranding=1&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${id}`}
+            title={title}
+            loading="lazy"
+            frameBorder="0"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+
     function HowToWatch() {
       return (
         <Section id="how-to-watch" className="py-20 text-center sm:py-28">
           <Reveal>
-            <SectionLabel>How to watch</SectionLabel>
-            <h2 className="kb-display mt-5 text-3xl text-white sm:text-5xl">See you on TV</h2>
+            <SectionLabel>Explore</SectionLabel>
+            <h2 className="kb-display mt-5 text-3xl text-white sm:text-5xl">All your K-content</h2>
           </Reveal>
 
-          {/* Same embed and parameters bingekorea.tv uses. loop needs `playlist` set to
-              the same id — on a single video it is otherwise ignored. mute is not a
-              preference: browsers block autoplay with sound. loading="lazy" holds the
-              player back until the section nears the viewport, so it costs nothing on
-              first paint and starts as the viewer arrives. */}
           <Reveal className="mt-10">
-            <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-black">
-              <iframe
-                className="absolute inset-0 h-full w-full"
-                src="https://www.youtube.com/embed/cU8H8ElxJXI?iv_load_policy=3&rel=0&modestbranding=1&playsinline=1&autoplay=1&mute=1&loop=1&playlist=cU8H8ElxJXI"
-                title="Kbingers on TV"
-                loading="lazy"
-                frameBorder="0"
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope"
-                allowFullScreen
-              />
-            </div>
+            <VideoFacade id="cU8H8ElxJXI" title="Kbingers on TV" />
           </Reveal>
         </Section>
       );
@@ -741,11 +760,16 @@
     // ========================================
     function ContentCard({ item }) {
       return (
-        <div className="group relative mx-2 h-32 w-56 shrink-0 overflow-hidden rounded-xl sm:h-40 sm:w-72"
-             style={{ background: item.grad }}>
-          <div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0" />
-          {item.live && <div className="absolute right-2 top-2"><LiveBadge /></div>}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+        <div className="group relative mx-2 h-40 w-[280px] shrink-0 overflow-hidden rounded-xl bg-grey80 sm:mx-2.5 sm:h-[218px] sm:w-[388px]">
+          <img
+            src={item.img}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+          {/* the artwork carries its own lettering, so the caption sits on a scrim */}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-3 pt-8">
             <p className="text-sm font-semibold uppercase leading-tight text-white drop-shadow sm:text-base">{item.title}</p>
             <p className="mt-0.5 text-[10px] font-medium text-white/70 sm:text-xs">{item.sub}</p>
           </div>
@@ -769,9 +793,9 @@
       return (
         <section id="channels" className="py-10">
           <div className="flex flex-col gap-2">
-            <ContentRow items={ROW1} direction="left" dur="48s" />
-            <ContentRow items={ROW2} direction="right" dur="55s" />
-            <ContentRow items={ROW3} direction="left" dur="50s" />
+            <ContentRow items={ROW1} direction="left" dur="95s" />
+            <ContentRow items={ROW2} direction="right" dur="110s" />
+            <ContentRow items={ROW3} direction="left" dur="100s" />
           </div>
         </section>
       );
@@ -954,7 +978,7 @@
               <nav className="flex flex-wrap items-center justify-center gap-x-[30px] gap-y-2 md:flex-1 md:justify-end">
                 <a href="#service" className="text-[14px] font-medium text-white transition hover:text-lime">Services</a>
                 <a href="#channels" className="text-[14px] font-medium text-white transition hover:text-lime">Channels</a>
-                <a href="#how-to-watch" className="text-[14px] font-medium text-white transition hover:text-lime">How to watch</a>
+                <a href="#how-to-watch" className="text-[14px] font-medium text-white transition hover:text-lime">Explore</a>
               </nav>
             </div>
 
