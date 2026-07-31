@@ -810,37 +810,11 @@
     // 📄 Service
     // ========================================
     // Small fake channel-UI screenshot placeholder
-    function ChannelUIMock() {
+    // Real product screens, in place of the drawn approximations that stood in before
+    function ServiceShot({ src, tone = 'dark' }) {
       return (
-        <div className="aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-grey90 p-2">
-          <div className="flex h-full gap-2">
-            <div className="hidden w-10 shrink-0 flex-col gap-1.5 sm:flex">
-              {[0,1,2,3,4].map(i => <div key={i} className={`h-6 rounded ${i===1?'bg-lime/70':'bg-grey75'}`} />)}
-            </div>
-            <div className="flex flex-1 flex-col gap-1.5">
-              <div className="h-1/2 rounded" style={{ background: GRAD.purple }} />
-              <div className="grid flex-1 grid-cols-4 gap-1.5">
-                {[GRAD.rose,GRAD.sky,GRAD.amber,GRAD.teal].map((g,i)=>(
-                  <div key={i} className="rounded" style={{ background: g }} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    // On-demand thumbnail placeholder
-    function OnDemandMock() {
-      return (
-        <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-grey90 p-2">
-          <div className="relative mb-1.5 h-1/2 w-full rounded" style={{ background: GRAD.slate }}>
-            <span className="absolute bottom-1.5 left-2 text-xs font-extrabold uppercase text-white/90">The Royal Tailor</span>
-          </div>
-          <div className="grid grid-cols-4 gap-1.5" style={{ height: '42%' }}>
-            {[GRAD.rose,GRAD.indigo,GRAD.amber,GRAD.teal].map((g,i)=>(
-              <div key={i} className="rounded" style={{ background: g }} />
-            ))}
-          </div>
+        <div className={`aspect-video w-full overflow-hidden rounded-xl border ${tone === 'dark' ? 'border-white/10' : 'border-black/10'}`}>
+          <img src={src} alt="" aria-hidden="true" loading="lazy" className="h-full w-full object-cover" />
         </div>
       );
     }
@@ -860,7 +834,7 @@
             <Reveal>
               <Card className="border border-white/10 bg-grey80 p-6 sm:p-10">
                 <div className="grid items-center gap-8 md:grid-cols-2">
-                  <ChannelUIMock />
+                  <ServiceShot src="assets/service-channel.jpg" />
                   <div className="text-left">
                     <h3 className="text-2xl font-semibold text-white">Channel</h3>
                     <p className="mt-4 text-sm leading-relaxed text-grey40">
@@ -881,7 +855,7 @@
                       Kbingers provides a convenient service that allows users to select and watch their favorite K-content for free at any time. It offers the flexibility to enjoy a wide variety of Korean genres and topics. The intuitive user interface and search functions make it easy to find specific programs or movies, creating a more seamless viewing experience for users.
                     </p>
                   </div>
-                  <OnDemandMock />
+                  <ServiceShot src="assets/service-ondemand.jpg" tone="light" />
                 </div>
               </Card>
             </Reveal>
