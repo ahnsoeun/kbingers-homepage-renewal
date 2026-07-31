@@ -305,15 +305,82 @@
       { title: 'Robocar Poli',    sub: 'Kids · Animation',          img: 'assets/channels/robocar-poli.jpg' },
     ];
 
+    // Copy taken verbatim from bingekorea.tv so the two stay in step. Template
+    // literals keep the line structure of the longer answers.
     const FAQS = [
-      { q: 'What is Kbingers?', a: 'Kbingers is a 24/7 premium Korean-content FAST/AVOD streaming platform. Enjoy K-dramas, K-movies, K-pop, variety shows and K-food across live curated channels and an on-demand library — Korean TV all day, everyday, all free.' },
-      { q: 'Is Kbingers really free?', a: 'Yes. Kbingers is 100% free. There is no subscription, no signup and no credit card required. The service is ad-supported (FAST/AVOD), so you can start watching instantly at no cost.' },
-      { q: 'Where is Kbingers available?', a: 'Kbingers is available across major connected-TV platforms and streaming devices in supported regions, including Samsung TV, LG TV, Roku, Amazon Fire TV, VIZIO and Google TV.' },
-      { q: 'Where can I watch Kbingers?', a: 'You can watch on your Smart TV or streaming device through the Kbingers app, or from any browser at bingekorea.tv. Pick a live channel to lean back, or browse on demand to choose exactly what you want.' },
-      { q: 'How do I download Kbingers?', a: 'Search "Kbingers" in your TV platform’s app store (Samsung, LG, Roku, Fire TV, VIZIO or Google TV) and install it — or use 1-Click Install to send the app straight to your TV from your phone in minutes.' },
-      { q: 'How do I save my favorite content?', a: 'Browse the on-demand library and add titles to your favorites to build a personal watchlist. Your picks are kept handy so you can jump back into a show or movie anytime.' },
-      { q: 'Contact Us', a: 'Need help or have a partnership inquiry? Reach out to NEW ID Co., Ltd. through the contact channels on bingekorea.tv or our social accounts — we are always here to help.' },
+      {
+        q: 'What is Kbingers?',
+        a: `Kbingers is a specialized FAST platform where you can watch all genres of Korean content for free. You can now access over 45 of NEW ID\u2019s premium FAST channels and more than 70 AVOD content options, all entirely free on Kbingers.`,
+      },
+      {
+        q: 'Is Kbingers really free?',
+        a: `Yes, Kbingers is a free service that you can enjoy without any subscription or additional payment.`,
+      },
+      {
+        q: 'Where is Kbingers available?',
+        a: `Kbingers is available in North America.`,
+      },
+      {
+        q: 'Where can I watch Kbingers?',
+        a: `Kbingers is available on Samsung Smart TV, LG Smart TV, Amazon Fire TV, Roku, VIZIO, and Google TV.`,
+      },
+      {
+        q: 'How do I download Kbingers?',
+        a: `\u25FC\uFE0E If you have Samsung Smart TV
+1. Navigate left from the 'Home' icon and select the 'Search' icon.
+2. Type 'Kbingers' (it doesn't have to be capitalized).
+3. Click on 'Kbingers' within the app category.
+4. Get ready to enjoy a variety of Korean content across all genres.
+
+\u25FC\uFE0E If you have LG Smart TV
+1. Click the 'Search' icon on the home screen.
+2. Type 'Kbingers' (it doesn't have to be capitalized).
+3. Click on 'Kbingers' within the app category.
+4. Click 'Install'.
+5. Click 'Launch' and get ready to enjoy a variety of Korean content across all genres.
+
+\u25FC\uFE0E If you have Roku
+1. Click 'Search'.
+2. Search for 'Kbingers' (it doesn't have to be capitalized).
+3. Click 'Kbingers', then click 'Add app'.
+4. Click 'Open app' and get ready to enjoy a variety of Korean content across all genres.
+
+\u25FC\uFE0E If you have Amazon Fire TV
+1. Click 'Find' to the left of 'Home'.
+2. Scroll down and click on the search bar.
+3. Search for 'Kbingers'.
+4. Click the 'Get free to download' button.
+5. Click 'Open'.
+
+\u25FC\uFE0E If you have VIZIO
+1. Click 'Apps' on the left of main page.
+2. Click 'App search'.
+3. Type 'Kbingers' and click.
+4. Click 'Open now'.
+
+\u25FC\uFE0E If you have Google TV
+1. Go to the Search tab on the home screen.
+2. Type 'Kbingers' or use voice search.
+3. Select the app from the results.
+4. Click Install.
+5. Click Open.`,
+      },
+      {
+        q: 'How do I save my favorite content?',
+        a: `\u25FC\uFE0E Channel
+You can save your favorite channels by clicking the 'My List' button on the Channel screen or in the Channel Guide.
+
+\u25FC\uFE0E On Demand
+You can save your favorite content by clicking the 'Add to My List' button on the VOD details page.
+
+On \u2018My Page,\u2019 you can view all your favorite content from Channel and On Demand. You can also remove items from your favorites.`,
+      },
+      {
+        q: 'Contact Us',
+        a: `app-marketing@its-newid.com`,
+      },
     ];
+
 
     // ========================================
     // 🧩 LAYOUT — Header
@@ -884,7 +951,7 @@
           </button>
           <div id={panelId} role="region" aria-labelledby={btnId} className={`kb-acc-body ${isOpen ? 'open' : ''}`}>
             <div className="kb-acc-inner">
-              <p className="px-5 pb-5 text-sm leading-relaxed text-grey40">{item.a}</p>
+              <p className="whitespace-pre-line px-5 pb-5 text-sm leading-relaxed text-grey40">{item.a}</p>
             </div>
           </div>
         </div>
@@ -920,7 +987,12 @@
     // ========================================
     function SocialIcon({ label, children, href = '#' }) {
       return (
-        <a href={href} aria-label={label} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/80 transition hover:border-lime hover:text-lime">
+        <a
+          href={href}
+          aria-label={label}
+          {...(/^https?:/.test(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/80 transition hover:border-lime hover:text-lime"
+        >
           {children}
         </a>
       );
@@ -934,14 +1006,11 @@
                 centred, nav right — with a hairline under the row. */}
             <div className="flex flex-col items-center gap-8 border-b border-white/15 pb-8 text-center md:flex-row md:items-center md:justify-between md:gap-4">
               <div className="flex gap-2.5 md:flex-1">
-                <SocialIcon label="X (Twitter)">
+                <SocialIcon label="Kbingers on X" href="https://x.com/k_bingers">
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                 </SocialIcon>
-                <SocialIcon label="TikTok">
+                <SocialIcon label="Kbingers on TikTok" href="https://www.tiktok.com/@kbingers">
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-                </SocialIcon>
-                <SocialIcon label="Instagram">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
                 </SocialIcon>
               </div>
 
@@ -954,10 +1023,14 @@
                 </p>
               </div>
 
+              {/* Derived from NAV_LINKS rather than repeated, so the footer cannot drift
+                  from the header. Drops the external NEW ID and FAQ. */}
               <nav className="flex flex-wrap items-center justify-center gap-x-[30px] gap-y-2 md:flex-1 md:justify-end">
-                <a href="#service" className="text-[14px] font-medium text-white transition hover:text-lime">Service</a>
-                <a href="#channels" className="text-[14px] font-medium text-white transition hover:text-lime">Channels</a>
-                <a href="#how-to-watch" className="text-[14px] font-medium text-white transition hover:text-lime">Explore</a>
+                {NAV_LINKS.filter((l) => l.href.startsWith('#') && l.label !== 'FAQ').map((l) => (
+                  <a key={l.label} href={l.href} className="text-[14px] font-medium text-white transition hover:text-lime">
+                    {l.label}
+                  </a>
+                ))}
               </nav>
             </div>
 
