@@ -469,7 +469,7 @@
         <a
           href={href}
           {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-          className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90 px-5 pt-7 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-9"
+          className="group relative flex h-[268px] flex-col items-center overflow-hidden rounded-[20px] border border-white/15 bg-grey90 px-5 pt-11 transition-colors duration-200 hover:border-white/35 sm:h-[344px] sm:pt-14"
         >
           <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.03]">
             <CardPlaceholder tint={tint} />
@@ -747,6 +747,11 @@
           <Reveal>
             <SectionLabel>Explore</SectionLabel>
             <h2 className="kb-display mt-5 text-3xl text-white sm:text-5xl">All your K-content</h2>
+            {/* same three-beat rhythm as the install line; each beat is a claim the FAQ
+                already makes — 24/7 channels, an on-demand library, free and ad-supported */}
+            <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-grey40">
+              Live channels. On demand. Always free.
+            </p>
           </Reveal>
 
           <Reveal className="mt-10">
